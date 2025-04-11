@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Django Project{% endblock %}</title>
+    <!-- Add your CSS links here -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Financial System</h1>
+        <nav>
+            <a href="/">Home</a>
+            {%if request.user.is_authenticated %}
+                <span>Hi {{ request.user.username | title }}</span>
+                <a href="logout/">Logout</a>
+            {%else%}
+                <a href="login/">Login</a>
+            {%endif%}
+            <!-- Add more navigation links as needed -->
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Main content will go here -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} My Django Project</p>
+    </footer>
+
+    <!-- Add your JavaScript links here -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
