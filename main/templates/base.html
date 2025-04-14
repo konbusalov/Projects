@@ -3,36 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Django Project{% endblock %}</title>
-    <!-- Add your CSS links here -->
-    {% block extra_css %}{% endblock %}
+    <title>{% block title %}Banking System{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #003366;
+            color: white;
+            padding: 1rem;
+        }
+        nav {
+            background: #f0f0f0;
+            padding: 0.5rem;
+        }
+        nav a {
+            margin-right: 1rem;
+            text-decoration: none;
+            color: #003366;
+        }
+        .container {
+            padding: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-buttons {
+            margin: 1rem 0;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Financial System</h1>
-        <nav>
-            <a href="/">Home</a>
-            {%if request.user.is_authenticated %}
-                <span>Hi {{ request.user.username | title }}</span>
-                <a href="logout/">Logout</a>
-            {%else%}
-                <a href="login/">Login</a>
-            {%endif%}
-            <!-- Add more navigation links as needed -->
-        </nav>
+        <h1>Banking System</h1>
     </header>
-
-    <main>
-        {% block content %}
-        <!-- Main content will go here -->
-        {% endblock %}
+    <nav>
+        <a href="/">Home</a>
+        {% block nav_system %}{% endblock %}
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
     </main>
-
-    <footer>
-        <p>&copy; {% now "Y" %} My Django Project</p>
-    </footer>
-
-    <!-- Add your JavaScript links here -->
-    {% block extra_js %}{% endblock %}
 </body>
 </html>

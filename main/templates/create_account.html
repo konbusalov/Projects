@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+    <h3>Create Account</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <p>
+            <label>Choose Bank</label><br>
+            <div>
+            {% for bank in banks %}
+                <input type="radio" name="bank" value="{{bank.name}}" />{{ bank.name}} <br />
+            {% endfor %}
+            </div>
+        </p>
+        <input type="submit" value="Save" >
+    </form>
+{%endblock%}

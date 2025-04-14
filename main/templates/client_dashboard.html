@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Client Dashboard{% endblock %}
+
+{% block nav_system %}
+    <a href="/client/accounts/">My Accounts</a>
+    <a href="/client/loans/">Loans</a>
+    <a href="/client/leases/">Leases</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Welcome, {{ request.user.username }}!</h2>
+    
+    <section class="account-summary">
+        <h3>Your Accounts</h3>
+        <table>
+            <thead><th>Account</th><th>Bank</th><th>Balance</th><th>Status</th><th>Action</th></thead>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.account_number }}</td>
+                <td>{{ account.bank.name }}</td>
+                <td>{{ account.balance }}</td>
+                <td>{{ account.status }}</td>
+                <td>
+                    <div class="account-actions">
+                        <a href="make_deposit/{{account.account_number}}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Deposit
+                        </a>
+                    </div>
+                    <button>Transfer</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="account-actions">
+            <a href="{%url 'create_account' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Open New Account
+            </a>
+        </div>
+
+        <style>
+            .btn-primary {
+                background-color: #0062cc;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+                display: inline-block;
+            }
+            .btn-primary:hover {
+                background-color: #0050a3;
+            }
+        </style>
+    </section>
+
+    <section class="loan-application">
+        <h3>Apply for Loan</h3>
+        <form method="post">
+            <div>
+                <label>Amount:</label>
+                <input type="number" name="amount" min="100" required>
+            </div>
+            <div>
+                <label>Term (months):</label>
+                <select name="term" required>
+                    <option value="3">3 months</option>
+                    <option value="6">6 months</option>
+                    <option value="12">12 months</option>
+                    <option value="24">24 months</option>
+                </select>
+            </div>
+            <div>
+                <label>Purpose:</label>
+                <textarea name="purpose" required></textarea>
+            </div>
+            <button type="submit">Submit Application</button>
+        </form>
+    </section>
+
+{% endblock %}

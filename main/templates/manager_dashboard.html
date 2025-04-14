@@ -1,0 +1,62 @@
+{% extends "operator_dashboard.html" %}
+
+{% block title %}Manager Dashboard{% endblock %}
+
+{% block nav_extra %}
+    {{ block.super }}
+    <a href="/manager/loans/">Loans</a>
+    <a href="/manager/leases/">Leases</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Manager Dashboard</h2>
+    
+    {{ block.super }}
+    
+    <section class="loan-approvals">
+        <h3>Pending Loan Approvals</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Term</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>$10,000</td>
+                    <td>12 months</td>
+                    <td>
+                        <button class="approve-btn">Approve</button>
+                        <button class="reject-btn">Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="external-transactions">
+        <h3>External Enterprise Transactions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Enterprise</th>
+                    <th>Transaction</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>XYZ Ltd</td>
+                    <td>Salary Payment</td>
+                    <td>$25,000</td>
+                    <td><button class="cancel-btn">Cancel</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+{% endblock %}
