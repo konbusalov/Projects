@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block nav_extra %}
+    <a href="/admin/logs/">Action Logs</a>
+    <a href="/admin/transactions/">All Transactions</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Administrator Dashboard</h2>
+    
+    <section class="action-logs">
+        <h3>System Action Logs</h3>
+        <div class="log-filters">
+            <select>
+                <option>All Actions</option>
+                <option>Financial Transactions</option>
+                <option>User Management</option>
+                <option>System Changes</option>
+            </select>
+            <input type="date" id="log-date">
+            <button>Filter</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-04-13 09:15</td>
+                    <td>johndoe</td>
+                    <td>Transaction Created</td>
+                    <td>Transfer $500 to account ****5678</td>
+                    <td><button class="undo-btn">Undo</button></td>
+                </tr>
+                <tr>
+                    <td>2025-04-13 10:30</td>
+                    <td>manager1</td>
+                    <td>Loan Approved</td>
+                    <td>Loan #12345 for $10,000</td>
+                    <td><button class="undo-btn">Undo</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="system-tools">
+        <h3>Administrative Tools</h3>
+        <div class="action-buttons">
+            <button>Export All Logs</button>
+            <button>Backup Database</button>
+            <button>User Management</button>
+        </div>
+    </section>
+{% endblock %}

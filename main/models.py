@@ -1,12 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+import uuid
+
+class Bank(models.Model):
+    name = models.CharField(max_length=100)
+
+class Enterprise(models.Model):
+    name = models.CharField(max_length=100)
+    unp = models.CharField(max_length=20)
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
 
 class User(AbstractUser):
+    ROLE_CHOICES = [
+        ('CLIENT', 'Client'),
+        ('OPERATOR', 'Operator'),
+        ('MANAGER', 'Manager'),
+        ('ADMIN', 'Admin'),
+        ('SPEICAILIST', 'Specialist')
+    ]
+
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='CLIENT')
+
+    
     full_name = models.CharField(max_length=20)
     passport = models.CharField(max_length=20)
     passport_id = models.CharField(max_length=20)
     phone = models.CharField(max_length=20)
     email = models.EmailField()
+
+    banks = models.ManyToManyField(Bank, through='Account', related_name='clients')
+    enterprise = models.ForeignKey(
+        Enterprise, 
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='specialists'
+    )
 
     groups = models.ManyToManyField(
         Group,
@@ -28,21 +57,22 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-
-class Bank(models.Model):
-    name = models.CharField(max_length=100)
-    bic = models.CharField(max_length=20)
-
-class Enterprise(models.Model):
-    name = models.CharField(max_length=100)
-    unp = models.CharField(max_length=20)
-    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
-
 class Account(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, limit_choices_to={'role': 'CLIENT'})
+    enterprise = models.ForeignKey(Enterprise, on_delete=models.CASCADE, null=True, blank=True)
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
+
+
+    account_number = models.CharField(max_length=20, unique=True, default=uuid.uuid4)
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     status = models.CharField(max_length=20, default='active')
+
+    def save(self, *args, **kwargs):
+        if not self.account_number:
+            self.account_number = str(uuid.uuid4())[:20]  # First 20 chars of UUID
+        super().save(*args, **kwargs)
+
+
 
 class Loan(models.Model):
     MONTH_CHOICES = [

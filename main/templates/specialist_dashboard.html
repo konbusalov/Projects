@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Enterprise Specialist Dashboard{% endblock %}
+
+{% block nav_extra %}
+    <a href="/specialist/salary-project/">Salary Project</a>
+    <a href="/specialist/transfers/">Transfers</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Enterprise Specialist Dashboard</h2>
+    
+    <section class="salary-project">
+        <h3>Submit Salary Project Documents</h3>
+        <form method="post" enctype="multipart/form-data">
+            <div>
+                <label>Enterprise Name:</label>
+                <input type="text" name="enterprise" required>
+            </div>
+            <div>
+                <label>Documents:</label>
+                <input type="file" name="documents" multiple required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <section class="transfers">
+        <h3>Request Transfer</h3>
+        <form method="post">
+            <div>
+                <label>Recipient Enterprise:</label>
+                <input type="text" name="recipient" required>
+            </div>
+            <div>
+                <label>Amount:</label>
+                <input type="number" name="amount" step="0.01" required>
+            </div>
+            <div>
+                <label>Purpose:</label>
+                <input type="text" name="purpose" required>
+            </div>
+            <button type="submit">Submit Request</button>
+        </form>
+    </section>
+{% endblock %}

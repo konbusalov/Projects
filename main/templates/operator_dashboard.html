@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Operator Dashboard{% endblock %}
+
+{% block nav_extra %}
+    <a href="/operator/transactions/">Transactions</a>
+    <a href="/operator/salary-projects/">Salary Projects</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Operator Dashboard</h2>
+    
+    <section class="transaction-stats">
+        <h3>Transaction Statistics</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Account</th>
+                    <th>Last Transaction</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>****1234</td>
+                    <td>2025-04-13 10:30</td>
+                    <td>$500.00</td>
+                    <td><button class="cancel-btn">Cancel</button></td>
+                </tr>
+                <!-- More rows would be dynamically generated -->
+            </tbody>
+        </table>
+    </section>
+
+    <section class="salary-projects">
+        <h3>Pending Salary Projects</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Enterprise</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ABC Corp</td>
+                    <td>2025-04-12</td>
+                    <td>Pending Review</td>
+                    <td><button class="approve-btn">Review</button></td>
+                </tr>
+                <!-- More rows would be dynamically generated -->
+            </tbody>
+        </table>
+    </section>
+{% endblock %}
