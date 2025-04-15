@@ -83,19 +83,41 @@ class Loan(models.Model):
         (36, '36 месяцев'),
     ]
 
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Approval'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     months = models.IntegerField(choices=MONTH_CHOICES)
-    interest_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.05)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank=True, related_name='approved_loans')
 
     @property
-    def total_amount(self, amount, interest_rate, months):
+    def total_amount(self):
         return self.amount * (1 + self.interest_rate) ** self.months
 
     @property
     def total_interest(self):
         return self.total_amount - self.amount
+    
+    def approve(self, manager: User):
+        if not manager.role == 'MANAGER':
+            raise ValueError("Only managers can approve loans")
+        self.status = 'APPROVED'
+        self.approved_by = manager
+        self.save()
+
+    def reject(self, manager: User):
+        if not manager.role == 'MANAGER':
+            raise ValueError("Only managers can reject loans")
+        self.status = 'REJECTED'
+        self.approved_by = manager
+        self.save()
         
 class Lease(models.Model):
     MONTH_CHOICES = [
@@ -106,27 +128,46 @@ class Lease(models.Model):
         (36, '36 месяцев'),
     ]
 
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Approval'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     months = models.IntegerField(choices=MONTH_CHOICES)
-    interest_rate = models.DecimalField(max_digits=5, decimal_places=2)
-    
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.05)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, blank=True, related_name='approved_leases')
+
     @property
     def monthly_payment(self):
         return (self.amount * (1 + self.interest_rate/100)) / self.months
 
-class Transfer(models.Model):
-    from_account = models.ForeignKey(
-        Account,
-        on_delete=models.CASCADE,
-        related_name='outgoing_transfers'
-    )
-    to_account = models.ForeignKey(
-        Account,
-        on_delete=models.CASCADE,
-        related_name='incoming_transfers'
-    )
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    def approve(self, manager: User):
+        if not manager.role == 'MANAGER':
+            raise ValueError("Only managers can approve leases")
+        self.status = 'APPROVED'
+        self.approved_by = manager
+        self.save()
+
+    def reject(self, manager: User):
+        if not manager.role == 'MANAGER':
+            raise ValueError("Only managers can reject leases")
+        self.status = 'REJECTED'
+        self.approved_by = manager
+        self.save()
+
+class Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='from_account')
+    to_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='to_account')
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    
+
+
+
 
     

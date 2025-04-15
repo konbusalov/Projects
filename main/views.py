@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from .forms import LoginForm, RegisterForm
 from .utils.decorators import role_required
-from .models import Bank, Account
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from .models import Bank, Account, Loan, Lease, Transaction
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
 from decimal import Decimal
 
 def index(request):
@@ -13,12 +13,15 @@ def index(request):
 @role_required('CLIENT')
 def client_dashboard(request):
     accounts = Account.objects.filter(user=request.user)
-    return render(request, 'client_dashboard.html', {"accounts": accounts})
+    loans = Loan.objects.filter(user=request.user)
+    leases = Lease.objects.filter(user=request.user)
+    return render(request, 'client_dashboard.html', {"accounts": accounts, "loans": loans, "leases": leases})
 
-role_required('OPERATOR', 'MANAGER')
+@role_required('OPERATOR', 'MANAGER')
 def staff_dashboard(request):
     if request.user.role == 'OPERATOR':
-        return render(request, 'operator_dashboard.html')
+        transactions = Transaction.objects.all()
+        return render(request, 'operator_dashboard.html', {"transactions": transactions})
     if request.user.role == 'MANAGER':
         return render(request, 'manager_dashboard.html')
     
@@ -106,6 +109,79 @@ def make_deposit(request, account_number):
             return render(request, 'make_deposit.html')
     except Account.DoesNotExist:
         return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('CLIENT')
+def make_transfer(request, account_number):
+    try:
+        account = Account.objects.get(account_number=account_number)
+
+        if request.method == "POST":
+            amount = request.POST.get('amount')
+            to_account = request.POST.get('to_account')
+            recieve_account = Account.objects.get(account_number=to_account)
+            account.balance -= Decimal(amount)
+            recieve_account.balance += Decimal(amount)
+            Transaction.objects.create(user=request.user, account=account, to_account=recieve_account, amount=amount)
+            account.save()
+            recieve_account.save()
+            return HttpResponseRedirect('/client_dashboard/')
+        else:
+            return render(request, 'make_transfer.html')
+    except Account.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('CLIENT')
+def make_loan(request):
+    if request.method == "POST":
+        try:
+            user = request.user
+            account_number = request.POST.get("account_number")
+            amount = Decimal(request.POST.get("amount"))
+            term = int(request.POST.get("term"))
+            account = Account.objects.get(account_number=account_number)
+            Loan.objects.create(user=user, account=account, amount=amount, months=term)
+            return render(request, 'loan_submitted.html')
+        except (ValueError, TypeError):
+            return HttpResponse("Invalid input data", status=400)
+    return redirect('client_dashboard')
+
+@role_required('CLIENT')
+def make_lease(request):
+    if request.method == "POST":
+        try:
+            user = request.user
+            account_number = request.POST.get("account_number")
+            amount = Decimal(request.POST.get("amount"))
+            term = int(request.POST.get("term"))
+            account = Account.objects.get(account_number=account_number)
+            Lease.objects.create(user=user, account=account, amount=amount, months=term)
+            return render(request, 'lease_submitted.html')
+        except (ValueError, TypeError):
+            return HttpResponse("Invalid input data", status=400)
+    return redirect('client_dashboard')
+
+@role_required('OPERATOR', 'MANAGER')
+def cancel_transaction(request, id):
+    try:
+        transaction = Transaction.objects.get(id=id)
+        account = transaction.account
+        to_account = transaction.to_account
+        amount = transaction.amount
+        account.balance += Decimal(amount)
+        account.save()
+        to_account.balance -= Decimal(amount)
+        to_account.save()
+        transaction.delete()
+        return redirect('staff dashboard')
+    except Account.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+
+
+
+
+
+
+
     
 
 def initialize():

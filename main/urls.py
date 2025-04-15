@@ -13,5 +13,9 @@ urlpatterns = [
     path('specialist_dashboard/', role_required('SPECIALIST')(views.specialist_dashboard), name='specialist dashboard'),
     path('admin_dashboard/', role_required('ADMIN')(views.admin_dashboard), name='admin dashboard'),
     path('create_account/', role_required('CLIENT')(views.create_account), name='create_account'),
-    path('client_dashboard/make_deposit/<uuid:account_number>', role_required('CLIENT')(views.make_deposit), name='make_deposit')
+    path('client_dashboard/make_deposit/<uuid:account_number>', role_required('CLIENT')(views.make_deposit), name='make_deposit'),
+    path('client_dashboard/make_transfer/<uuid:account_number>', role_required('CLIENT')(views.make_transfer), name='make_transfer'),
+    path('make_loan/', role_required('CLIENT')(views.make_loan), name='make_loan'),
+    path('make_lease/', role_required('CLIENT')(views.make_lease), name='make_lease'),
+    path('staff_dashboard/cancel_transaction/<int:id>', role_required('OPERATOR', 'MANAGER')(views.cancel_transaction), name='cancel_transaction'),
 ]

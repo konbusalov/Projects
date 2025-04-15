@@ -2,7 +2,7 @@
 
 {% block title %}Operator Dashboard{% endblock %}
 
-{% block nav_extra %}
+{% block nav_system %}
     <a href="/operator/transactions/">Transactions</a>
     <a href="/operator/salary-projects/">Salary Projects</a>
 {% endblock %}
@@ -10,28 +10,39 @@
 {% block content %}
     <h2>Operator Dashboard</h2>
     
-    <section class="transaction-stats">
-        <h3>Transaction Statistics</h3>
+    <section>
+        <h3>Transactions</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Account</th>
-                    <th>Last Transaction</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>John Doe</td>
-                    <td>****1234</td>
-                    <td>2025-04-13 10:30</td>
-                    <td>$500.00</td>
-                    <td><button class="cancel-btn">Cancel</button></td>
-                </tr>
-                <!-- More rows would be dynamically generated -->
-            </tbody>
+            <thead><th>User</th><th>From Account</th><th>To Account</th><th>Amount</th><th>Action</th></thead>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.user.full_name }}</td>
+                <td>{{ transaction.account.account_number }}</td>
+                <td>{{ transaction.to_account.account_number }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>
+                    <div class="transaction-actions">
+                        <a href="/staff_dashboard/cancel_transaction/{{transaction.id}}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Cancel
+                        </a>
+                    </div>
+            
+                    <style>
+                        .btn-primary {
+                            background-color: #0062cc;
+                            color: white;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            text-decoration: none;
+                            display: inline-block;
+                        }
+                        .btn-primary:hover {
+                            background-color: #0050a3;
+                        }
+                    </style>
+                </td>
+            </tr>
+            {% endfor %}
         </table>
     </section>
 

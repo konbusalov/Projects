@@ -27,7 +27,11 @@
                             <i class="fas fa-plus"></i> Deposit
                         </a>
                     </div>
-                    <button>Transfer</button>
+                    <div class="account-actions">
+                        <a href="make_transfer/{{account.account_number}}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Transfer
+                        </a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
@@ -55,7 +59,15 @@
 
     <section class="loan-application">
         <h3>Apply for Loan</h3>
-        <form method="post">
+        <form method="POST" action="{% url 'make_loan' %}">
+            {% csrf_token %}
+            <div>
+                <select name="account_number" style="width: 300px;">
+                {% for account in accounts %}
+                    <option value="{{account.account_number}}" >{{account.account_number}}</option>
+                {% endfor %}
+                </select>
+            </div>
             <div>
                 <label>Amount:</label>
                 <input type="number" name="amount" min="100" required>
@@ -69,12 +81,80 @@
                     <option value="24">24 months</option>
                 </select>
             </div>
-            <div>
-                <label>Purpose:</label>
-                <textarea name="purpose" required></textarea>
+            <div class="account-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Submit Application
+                </button>
             </div>
-            <button type="submit">Submit Application</button>
         </form>
+    </section>
+
+    <section>
+        <h3>Your Loans</h3>
+        <table>
+            <thead><th>Account</th><th>Amount</th><th>Term</th><th>Interest Rate</th><th>Status</th><th>Approved By</th><th>Total Interest</th></thead>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.account.account_number }}</td>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.months }}</td>
+                <td>{{ loan.interest_rate }}</td>
+                <td>{{ loan.status }}</td>
+                <td>{{ loan.approved_by}}</td>
+                <td>{{ loan.total_interest }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <h3>Apply for Lease</h3>
+        <form method="POST" action="{% url 'make_lease' %}">
+            {% csrf_token %}
+            <div>
+                <select name="account_number" style="width: 300px;">
+                {% for account in accounts %}
+                    <option value="{{account.account_number}}" >{{account.account_number}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Amount:</label>
+                <input type="number" name="amount" min="100" required>
+            </div>
+            <div>
+                <label>Term (months):</label>
+                <select name="term" required>
+                    <option value="3">3 months</option>
+                    <option value="6">6 months</option>
+                    <option value="12">12 months</option>
+                    <option value="24">24 months</option>
+                </select>
+            </div>
+            <div class="account-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Submit Application
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h3>Your Leases</h3>
+        <table>
+            <thead><th>Account</th><th>Amount</th><th>Term</th><th>Interest Rate</th><th>Status</th><th>Approved By</th><th>Monthly Payment</th></thead>
+            {% for lease in leases %}
+            <tr>
+                <td>{{ lease.account.account_number }}</td>
+                <td>{{ lease.amount }}</td>
+                <td>{{ lease.months }}</td>
+                <td>{{ lease.interest_rate }}</td>
+                <td>{{ lease.status }}</td>
+                <td>{{ lease.approved_by}}</td>
+                <td>{{ lease.monthly_payment }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </section>
 
 {% endblock %}
