@@ -13,29 +13,100 @@
     
     {{ block.super }}
     
-    <section class="loan-approvals">
+    <section>
         <h3>Pending Loan Approvals</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Amount</th>
-                    <th>Term</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>$10,000</td>
-                    <td>12 months</td>
-                    <td>
-                        <button class="approve-btn">Approve</button>
-                        <button class="reject-btn">Reject</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-container">  <!-- Added container div -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Term</th>
+                        <th>Interest Rate</th>
+                        <th>Action</th>
+                        <th></th> <!-- Added for the second action button -->
+                    </tr>
+                </thead>
+                <tbody>  <!-- Added tbody for better structure -->
+                    {% for loan in loans %}
+                    <tr>
+                        <td>{{ loan.user.full_name }}</td>
+                        <td>{{ loan.account.account_number }}</td>
+                        <td>{{ loan.amount }}</td>
+                        <td>{{ loan.term }}</td>
+                        <td>{{ loan.interest_rate }}</td>
+                        {% if loan.status == 'PENDING' %}
+                            <td>
+                                <div class="loan-actions">
+                                    <a href="/staff_dashboard/approve_loan/{{loan.id}}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Approve
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="transaction-actions">
+                                    <a href="/staff_dashboard/reject_loan/{{loan.id}}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Reject
+                                    </a>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td colspan="2">{{ loan.status }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h3>Pending Lease Approvals</h3>
+        <div class="table-container">  
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Term</th>
+                        <th>Interest Rate</th>
+                        <th>Action</th>
+                        <th></th> 
+                    </tr>
+                </thead>
+                <tbody> 
+                    {% for lease in leases %}
+                    <tr>
+                        <td>{{ lease.user.full_name }}</td>
+                        <td>{{ lease.account.account_number }}</td>
+                        <td>{{ lease.amount }}</td>
+                        <td>{{ lease.term }}</td>
+                        <td>{{ lease.interest_rate }}</td>
+                        {% if lease.status == 'PENDING' %}
+                            <td>
+                                <div class="lease-actions">
+                                    <a href="/staff_dashboard/approve_lease/{{lease.id}}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Approve
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="transaction-actions">
+                                    <a href="/staff_dashboard/reject_lease/{{lease.id}}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Reject
+                                    </a>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td colspan="2">{{ lease.status }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="external-transactions">

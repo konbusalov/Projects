@@ -19,11 +19,15 @@ def client_dashboard(request):
 
 @role_required('OPERATOR', 'MANAGER')
 def staff_dashboard(request):
+    transactions = Transaction.objects.all()
     if request.user.role == 'OPERATOR':
-        transactions = Transaction.objects.all()
         return render(request, 'operator_dashboard.html', {"transactions": transactions})
     if request.user.role == 'MANAGER':
-        return render(request, 'manager_dashboard.html')
+        loans = Loan.objects.all()
+        leases = Lease.objects.all()
+        return render(request, 'manager_dashboard.html', {"transactions": transactions,
+                                                          "loans": loans,
+                                                          "leases": leases })
     
 @role_required('ADMIN')
 def admin_dashboard(request):
@@ -173,8 +177,51 @@ def cancel_transaction(request, id):
         to_account.save()
         transaction.delete()
         return redirect('staff dashboard')
-    except Account.DoesNotExist:
+    except Transaction.DoesNotExist:
         return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('MANAGER')
+def approve_loan(request, id):
+    try:
+        loan = Loan.objects.get(id=id)
+        loan.approve(request.user)
+        account = loan.account
+        account.balance += loan.amount
+        account.save()
+        return redirect('staff dashboard')
+    except Loan.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('MANAGER')
+def reject_loan(request, id):
+    try:
+        loan = Loan.objects.get(id=id)
+        loan.reject(request.user)
+        return redirect('staff dashboard')
+    except Loan.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('MANAGER')
+def approve_lease(request, id):
+    try:
+        lease = Lease.objects.get(id=id)
+        lease.approve(request.user)
+        account = lease.account
+        account.balance += lease.amount
+        account.save()
+        return redirect('staff dashboard')
+    except lease.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+    
+@role_required('MANAGER')
+def reject_lease(request, id):
+    try:
+        lease = Lease.objects.get(id=id)
+        lease.reject(request.user)
+        return redirect('staff dashboard')
+    except lease.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+
 
 
 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 import uuid
+from math import ceil
 
 class Bank(models.Model):
     name = models.CharField(max_length=100)
@@ -103,7 +104,7 @@ class Loan(models.Model):
 
     @property
     def total_interest(self):
-        return self.total_amount - self.amount
+        return ceil(self.total_amount - self.amount)
     
     def approve(self, manager: User):
         if not manager.role == 'MANAGER':
@@ -144,7 +145,7 @@ class Lease(models.Model):
 
     @property
     def monthly_payment(self):
-        return (self.amount * (1 + self.interest_rate/100)) / self.months
+        return ceil((self.amount * (1 + self.interest_rate/100)) / self.months)
 
     def approve(self, manager: User):
         if not manager.role == 'MANAGER':

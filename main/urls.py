@@ -18,4 +18,8 @@ urlpatterns = [
     path('make_loan/', role_required('CLIENT')(views.make_loan), name='make_loan'),
     path('make_lease/', role_required('CLIENT')(views.make_lease), name='make_lease'),
     path('staff_dashboard/cancel_transaction/<int:id>', role_required('OPERATOR', 'MANAGER')(views.cancel_transaction), name='cancel_transaction'),
+    path('staff_dashboard/approve_loan/<int:id>', role_required('MANAGER')(views.approve_loan), name='approve_loan'),
+    path('staff_dashboard/reject_loan/<int:id>', role_required('MANAGER')(views.reject_loan), name='reject_loan'),
+    path('staff_dashboard/approve_lease/<int:id>', role_required('MANAGER')(views.approve_lease), name='approve_lease'),
+    path('staff_dashboard/reject_lease/<int:id>', role_required('MANAGER')(views.reject_lease), name='reject_lease'),
 ]

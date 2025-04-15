@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Operator Dashboard{% endblock %}
+{% block title %}
+    {% if request.user.role == 'OPERATOR' %}
+        Operator Dashboard
+    {% endif %}
+{% endblock %}
 
 {% block nav_system %}
     <a href="/operator/transactions/">Transactions</a>
@@ -8,7 +12,9 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Operator Dashboard</h2>
+    {% if request.user.role == 'OPERATOR' %}
+        <h2>Operator Dashboard</h2>
+    {% endif %}
     
     <section>
         <h3>Transactions</h3>
