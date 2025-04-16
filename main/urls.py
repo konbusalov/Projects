@@ -22,4 +22,5 @@ urlpatterns = [
     path('staff_dashboard/reject_loan/<int:id>', role_required('MANAGER')(views.reject_loan), name='reject_loan'),
     path('staff_dashboard/approve_lease/<int:id>', role_required('MANAGER')(views.approve_lease), name='approve_lease'),
     path('staff_dashboard/reject_lease/<int:id>', role_required('MANAGER')(views.reject_lease), name='reject_lease'),
+    path('register_enterprise/', role_required('SPECIALIST')(views.register_enterprise), name='register_enterprise')
 ]

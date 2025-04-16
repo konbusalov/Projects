@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, EnterpriseForm
 from .utils.decorators import role_required
-from .models import Bank, Account, Loan, Lease, Transaction
+from .models import Bank, Account, Loan, Lease, Transaction, Enterprise
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
 from decimal import Decimal
 
@@ -82,9 +82,22 @@ def sign_up(request):
             user.save()
             messages.success(request, 'You have signed up successfully.')
             login(request, user)
+            if user.role == 'SPECIALIST':
+                return redirect('register_enterprise')
             return redirect('/')
         else:
             return render(request, 'register.html', {'form': form})
+        
+@role_required('SPECIALIST')
+def register_enterprise(request):
+    if request.method == 'GET':
+        form = EnterpriseForm()
+        return render(request, 'register_enterprise.html', {'form': form})
+
+    if request.methos == 'POST':
+        user = request.user
+
+    return render(request, 'register_enterprise.html')
         
 @role_required('CLIENT')       
 def create_account(request):

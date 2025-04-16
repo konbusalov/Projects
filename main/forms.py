@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Account
+from .models import User, Account, Enterprise
 from django.contrib.auth.forms import UserCreationForm
 
 class LoginForm(forms.Form):
@@ -11,7 +11,8 @@ class RegisterForm(UserCreationForm):
         model=User
         fields = ['username','full_name','email','passport','passport_id','phone','password1','password2', 'role'] 
 
-class AccountForm(forms.Form):
+class EnterpriseForm(forms.ModelForm):
     class Meta:
-        model=Account
+        model=Enterprise
+        fields = ['name', 'unp', 'bank']
         
